@@ -15,7 +15,7 @@ Within your `main` function, there should be `int argc, char** argv` within the 
 <dl class="section warning">
 <dt>Warning</dt>
 <dd>
-**Currently, a flat string is not yet supported, but there are plans to do so in the future.**
+<strong>Currently, a flat string is not yet supported, but there are plans to do so in the future.</strong>
 </dd>
 </dl>
 
