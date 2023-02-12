@@ -27,6 +27,8 @@ with Parseman. If not, see <https://www.gnu.org/licenses/>.
 #include <typeinfo>
 #include <exception>
 #include <regex>
+#include <iostream>
+#include <cassert>
 
 namespace parseman {
 
@@ -103,20 +105,23 @@ namespace parseman {
                 if (typeid(T).hash_code() != typemap[cmd] && typeid(T).hash_code() != typeid(bool).hash_code())
                     throw BadParserType{};
 
-                if (typeid(T).hash_code() == typeid(bool).hash_code()) {
-                    return std::regex_search(cmdline, patmap[cmd]);
-                } else {
-                    T temp = T();
-                    std::smatch sm_result {};
+                T temp = T();
+                std::smatch sm_result {};
 
-                    if (!std::regex_search(cmdline, sm_result, patmap[cmd]))
-                        return temp;
+                std::regex_search(cmdline, sm_result, patmap[cmd]);
 
-                    std::stringstream temp_ss {sm_result.str(submatch)};
-                    temp_ss >> temp;
+                std::stringstream temp_ss {sm_result.str(submatch)};
 
-                    return temp;
-                }
+                //std::cout << sm_result.str() << std::endl;
+                
+                if (typeid(T).hash_code() == typeid(bool).hash_code())
+                    temp_ss >> std::boolalpha >> temp;
+                else
+                    assert(temp_ss >> temp);
+
+                std::cout << temp << std::endl;
+
+                return temp;
             }
 
             /**
@@ -135,7 +140,7 @@ namespace parseman {
              * @see setType()
              */
             void setPattern(E cmd, std::string const& pattern) {
-                patmap[cmd] = std::regex(pattern);
+                patmap[cmd] = std::regex(pattern, std::regex::ECMAScript | std::regex::multiline);
             }
 
             /**
