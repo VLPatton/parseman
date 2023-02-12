@@ -1,2 +1,5 @@
 doc/
 *.json
+*.o
+test/test*
+test/.cache/
